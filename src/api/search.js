@@ -1,5 +1,8 @@
 import jsonp from '@/common/js/jsonp'
-import { commonParams, opts } from '@/api/common-query.js'
+import {
+  commonParams,
+  opts
+} from '@/api/common-query.js'
 
 /**
  * jsonp 抓取热门搜索数据

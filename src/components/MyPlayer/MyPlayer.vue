@@ -131,7 +131,7 @@
            @error="error"
            @timeupdate="timeupdate"
            @ended="ended"
-           :src="currentSong.url">Your browser does not support the audio element.</audio>
+           :src="audioSrc">Your browser does not support the audio element.</audio>
   </div>
 </template>
 
@@ -559,14 +559,15 @@ export default {
         cls = ''
       }
       return cls
+    },
+    audioSrc() {
+      return `http://ws.stream.qqmusic.qq.com/C100${this.currentSong.mid}.m4a?fromtag=38`
     }
   },
   created () {
     // 维护一个滑动状态对象
     this.touch = {}
-  },
-  mounted () {},
-  destroyed () {}
+  }
 }
 </script>
 

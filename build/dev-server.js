@@ -23,18 +23,18 @@ var proxyTable = config.dev.proxyTable
 
 var app = express()
 
-// axios 结合 node.js 代理后端请求
+// axios 结合 node.js 代理后端请求，推荐页列表
 var apiRoutes = express.Router()
 apiRoutes.get('/getList', function (req, res) {
   var url = 'https://c.y.qq.com/splcloud/fcgi-bin/fcg_get_diss_by_tag.fcg'
 
   axios.get(url, {
-      headers: {
-        referer: 'https://c.y.qq.com/',
-        host: 'c.y.qq.com'
-      },
-      params: req.query
-    })
+    headers: {
+      referer: 'https://c.y.qq.com/',
+      host: 'c.y.qq.com'
+    },
+    params: req.query
+  })
     .then(function (response) {
       res.json(response.data)
     })
@@ -42,16 +42,71 @@ apiRoutes.get('/getList', function (req, res) {
       console.log(error)
     })
 })
+
+// 推荐页歌单数据
+apiRoutes.get('/getSongList', function (req, res) {
+  var url = 'https://c.y.qq.com/qzone/fcg-bin/fcg_ucc_getcdinfo_byids_cp.fcg'
+
+  axios.get(url, {
+    headers: {
+      referer: 'https://c.y.qq.com/',
+      host: 'c.y.qq.com'
+    },
+    params: req.query
+  })
+    .then((response) => {
+      var result = response.data
+      if (typeof result === 'string') {
+        result = result.substring(result.indexOf('(') + 1, result.length - 1)
+        res.json(JSON.parse(result))
+      }
+    })
+    .catch((error) => {
+      console.log(error)
+    })
+})
+
 apiRoutes.get('/getLyric', function (req, res) {
   var url = 'https://c.y.qq.com/lyric/fcgi-bin/fcg_query_lyric_new.fcg'
 
   axios.get(url, {
-      headers: {
-        referer: 'https://c.y.qq.com/',
-        host: 'c.y.qq.com'
-      },
-      params: req.query
+    headers: {
+      referer: 'https://c.y.qq.com/',
+      host: 'c.y.qq.com'
+    },
+    params: req.query
+  })
+    .then((response) => {
+      // jsonp 数据转为 json 数据
+      var result = response.data
+
+      if (typeof result === 'string') {
+        var reg = /^\w+\(({[^()]+})\)$/
+        var matches = result.match(reg)
+
+        if (matches) {
+          result = JSON.parse(matches[1])
+        }
+      }
+
+      res.json(result)
+      // res.json(response.data)
     })
+    .catch((error) => {
+      console.log(error)
+    })
+})
+// 推荐页歌单数据
+apiRoutes.get('/getSongList', function (req, res) {
+  var url = 'https://c.y.qq.com/lyric/fcgi-bin/fcg_query_lyric_new.fcg'
+
+  axios.get(url, {
+    headers: {
+      referer: 'https://c.y.qq.com/',
+      host: 'c.y.qq.com'
+    },
+    params: req.query
+  })
     .then((response) => {
       // jsonp 数据转为 json 数据
       var result = response.data
@@ -82,7 +137,7 @@ var devMiddleware = require('webpack-dev-middleware')(compiler, {
 })
 
 var hotMiddleware = require('webpack-hot-middleware')(compiler, {
-  log: () => {},
+  log: () => { },
   heartbeat: 2000
 })
 // force page reload when html-webpack-plugin template changes

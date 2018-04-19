@@ -32,7 +32,7 @@
               </span>
             </h1>
 
-            <my-search-list :searches="searchHistory" @select="addQuery" @delete="deleteHis"></my-search-list>
+            <!-- <my-search-list :searches="searchHistory" @select="addQuery" @delete="deleteHis"></my-search-list> -->
           </div>
         </div>
       </my-scroll>
